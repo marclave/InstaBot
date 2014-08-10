@@ -21,7 +21,7 @@ git clone https://github.com/marclave/InstaBot.git
 Modify the profile to include your information, example:
 ```
 CREDENTIALS:
-  USERNAME: astudent
+  USERNAME: username
   PASSWORD: cleverPassword
 ```
 
