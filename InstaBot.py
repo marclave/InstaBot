@@ -1,4 +1,4 @@
-import mechanize, yaml, re
+import mechanize, yaml, re, time
 
 WEBSTA_URL = "http://websta.me/"
 WEBSTA_LOGIN = WEBSTA_URL + "login"
@@ -8,14 +8,11 @@ WEBSTA_LIKE = WEBSTA_URL + "api/like/"
 INSTAGRAM_LOGIN = "https://instagram.com/accounts/login/"
 USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'
 
-
-
 def login(br, profile):
 
 	br.open(INSTAGRAM_LOGIN)
 
 	br.form = list(br.forms())[0]  # Used because the form name was not named  
-
 	br.form.set_all_readonly(False) # allow changing the .value of all controls
 	
 	userNameControl = br.form.find_control("username")
@@ -36,6 +33,7 @@ def getTopHashTags(br):
 def like(br, hashtags):
 
 	br.open(WEBSTA_URL + "tag/love")
+	likes = 0
 
 	for hashtag in hashtags:
 		media_id = []
@@ -50,9 +48,17 @@ def like(br, hashtags):
 			br.open(WEBSTA_LIKE + id)
 			if bool(re.match("{\"status\":\"OK\",\"message\":\"LIKED\"", br.response().read())):
 				print "YOU LIKED" + str(id)
+				likes += 1
+				time.sleep(profile['SLEEPTIME'])
 			else:
 				print "SOMETHING WENT WRONG"
 				print br.response().read()
+				print "SLEEPING FOR " + str(profile['SLEEPTIME'])
+				print "CURRENTLY LIKED " + str(likes) + " photos"
+				time.sleep(60)
+
+	print "YOU LIKED " + str(likes) + " photos"
+
 
 
 if __name__ == "__main__":

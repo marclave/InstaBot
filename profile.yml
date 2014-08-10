@@ -1,3 +1,4 @@
 CREDENTIALS:
-  USERNAME: user_name
-  PASSWORD: clever_password
+  USERNAME: username
+  PASSWORD: password
+SLEEPTIME: 60
