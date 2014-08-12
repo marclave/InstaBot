@@ -34,7 +34,7 @@ def getTopHashTags(br):
 def getHashtagsFromFile():
     #your list of hashtags
     hashtags = []
-    filename = 'hshtgs.txt'
+    filename = 'hashtags.txt'
     #Hashtag file input
     f = open(filename)
     #strips newline character
