@@ -31,6 +31,17 @@ def getTopHashTags(br):
 
 	return topHashtags
 
+def getHashtagsFromFile():
+    #your list of hashtags
+    hashtags = []
+    filename = 'hshtgs.txt'
+    #Hashtag file input
+    f = open(filename)
+    #strips newline character
+    hashtags = [line.strip() for line in open(filename)]
+    f.close()
+    return hashtags
+	
 def like(br, hashtags):
 
 	likes = 0
@@ -87,5 +98,8 @@ if __name__ == "__main__":
 	br.addheaders = [('User-Agent', USER_AGENT), ('Accept', '*/*')] 
 
 	login(br, profile)
-	topHashtags = getTopHashTags(br)
+	if profile['TOP'] == 1:
+		hashtags = getTopHashTags(br)
+    else:
+        hashtags = getHashtagsFromFile()
 	like(br, topHashtags)
