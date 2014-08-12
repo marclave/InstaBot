@@ -47,7 +47,6 @@ def like(br, hashtags):
 					media_id.append(control.value)
 		for id in media_id:
 			if hashtaglikes >= LIKES_PER_HASHTAG:
-				print "hashtaglimit test"
 				hashtaglikes = 0
 				break
 			if likes >= MAX_LIKES:
