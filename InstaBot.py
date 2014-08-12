@@ -50,7 +50,8 @@ def like(br, hashtags):
 		hashtaglikes = 0
 		media_id = []
 		br.open(WEBSTA_URL +"tag/" + hashtag)
-
+		print "Liking #" + str(hashtag)
+		
 		for form in br.forms():
 			form.set_all_readonly(False)
 			for control in form.controls:
@@ -100,6 +101,6 @@ if __name__ == "__main__":
 	login(br, profile)
 	if profile['TOP'] == 1:
 		hashtags = getTopHashTags(br)
-    else:
-        hashtags = getHashtagsFromFile()
-	like(br, topHashtags)
+	else:
+		hashtags = getHashtagsFromFile()
+	like(br, hashtags)
