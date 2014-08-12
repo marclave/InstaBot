@@ -1,4 +1,4 @@
-import mechanize, yaml, re, time
+import mechanize, yaml, re, time, sys
 
 WEBSTA_URL = "http://websta.me/"
 WEBSTA_LOGIN = WEBSTA_URL + "login"
@@ -7,6 +7,7 @@ WEBSTA_LIKE = WEBSTA_URL + "api/like/"
 
 INSTAGRAM_LOGIN = "https://instagram.com/accounts/login/"
 USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'
+
 
 def login(br, profile):
 
@@ -35,6 +36,7 @@ def like(br, hashtags):
 	likes = 0
 
 	for hashtag in hashtags:
+		hashtaglikes = 0
 		media_id = []
 		br.open(WEBSTA_URL +"tag/" + hashtag)
 
@@ -44,10 +46,20 @@ def like(br, hashtags):
 				if control.name == "media_id":
 					media_id.append(control.value)
 		for id in media_id:
+			if hashtaglikes >= LIKES_PER_HASHTAG:
+				print "hashtaglimit test"
+				hashtaglikes = 0
+				break
+			if likes >= MAX_LIKES:
+				print "You have reached MAX_LIKES"
+				print "This # is currently " + str(MAX_LIKES)
+				sys.exit()
+				break
 			br.open(WEBSTA_LIKE + id)
 			if bool(re.match("{\"status\":\"OK\",\"message\":\"LIKED\"", br.response().read())):
 				print "YOU LIKED " + str(id)
 				likes += 1
+				hashtaglikes += 1
 				time.sleep(profile['SLEEPTIME'])
 			else:
 				print "SOMETHING WENT WRONG"
@@ -55,7 +67,7 @@ def like(br, hashtags):
 				print "SLEEPING FOR 60 seconds"
 				print "CURRENTLY LIKED " + str(likes) + " photos"
 				time.sleep(60)
-
+		
 	print "YOU LIKED " + str(likes) + " photos"
 
 
@@ -69,6 +81,8 @@ if __name__ == "__main__":
 	print ""
 
 	profile = yaml.safe_load(open("profile.yml", "r"))	
+	MAX_LIKES = profile['MAXLIKES']
+	LIKES_PER_HASHTAG = profile['PERHASHTAG']
 	br = mechanize.Browser()
 
 	br.addheaders = [('User-Agent', USER_AGENT), ('Accept', '*/*')] 

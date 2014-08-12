@@ -23,6 +23,8 @@ Modify the profile to include your information, example:
 CREDENTIALS:
   USERNAME: username
   PASSWORD: cleverPassword
+MAXLIKES: 1000
+PERHASHTAG: 10
 ```
 
 Then run:
