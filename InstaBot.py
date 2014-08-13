@@ -22,6 +22,12 @@ def login(br, profile):
 	passwordControl.value = profile['CREDENTIALS']['PASSWORD']
 
 	br.submit()
+
+	if bool(re.search("Please enter a correct username and password\. Note that both fields are case-sensitive", br.response().read())):
+		print "INCORRECT LOGIN"
+		print "PLEASE CHECK CREDENTIALS... EXITING NOW"
+		sys.exit()
+
 	br.open(WEBSTA_LOGIN) # logs into websta.me website
 
 def getTopHashTags(br):
@@ -59,6 +65,14 @@ def like(br, hashtags):
 					media_id.append(control.value)
 		for id in media_id:
 
+			if profile['MAXLIKES'] == "NO_MAX":
+				pass
+			elif likes >= int(profile['MAXLIKES']):
+				print "You have reached MAX_LIKES(" + str(profile['MAXLIKES']) + ")"
+				print "This # is currently " + str(hashtag)
+				sys.exit()
+				break
+
 			if profile['PERHASHTAG'] == "NO_MAX":
 				pass				
 			elif hashtaglikes >= int(profile['PERHASHTAG']):
@@ -67,16 +81,8 @@ def like(br, hashtags):
 				hashtaglikes = 0
 				break
 
-			if profile['MAXLIKES'] == "NO_MAX":
-				pass
-			elif likes >= int(profile['MAXLIKES']):
-				print "You have reached MAX_LIKES"
-				print "This # is currently " + str(MAX_LIKES)
-				sys.exit()
-				break
-
 			br.open(WEBSTA_LIKE + id)
-			
+
 			if bool(re.match("{\"status\":\"OK\",\"message\":\"LIKED\"", br.response().read())):
 				print "YOU LIKED " + str(id)
 				likes += 1
