@@ -58,15 +58,25 @@ def like(br, hashtags):
 				if control.name == "media_id":
 					media_id.append(control.value)
 		for id in media_id:
-			if hashtaglikes >= LIKES_PER_HASHTAG:
+
+			if profile['PERHASHTAG'] == "NO_MAX":
+				pass				
+			elif hashtaglikes >= int(profile['PERHASHTAG']):
+				print "REACHED MAX_LIKES PER HASHTAG"
+				print "MOVING ONTO NEXT HASHTAG"
 				hashtaglikes = 0
 				break
-			if likes >= MAX_LIKES:
+
+			if profile['MAXLIKES'] == "NO_MAX":
+				pass
+			elif likes >= int(profile['MAXLIKES']):
 				print "You have reached MAX_LIKES"
 				print "This # is currently " + str(MAX_LIKES)
 				sys.exit()
 				break
+
 			br.open(WEBSTA_LIKE + id)
+			
 			if bool(re.match("{\"status\":\"OK\",\"message\":\"LIKED\"", br.response().read())):
 				print "YOU LIKED " + str(id)
 				likes += 1
@@ -81,8 +91,6 @@ def like(br, hashtags):
 		
 	print "YOU LIKED " + str(likes) + " photos"
 
-
-
 if __name__ == "__main__":
 
 	print "================================="
@@ -92,10 +100,7 @@ if __name__ == "__main__":
 	print ""
 
 	profile = yaml.safe_load(open("profile.yml", "r"))	
-	MAX_LIKES = profile['MAXLIKES']
-	LIKES_PER_HASHTAG = profile['PERHASHTAG']
 	br = mechanize.Browser()
-
 	br.addheaders = [('User-Agent', USER_AGENT), ('Accept', '*/*')] 
 
 	login(br, profile)
