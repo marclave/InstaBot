@@ -3,7 +3,7 @@ InstaBot
 
 A simple Instagram bot that pulls trending top 100 hashtags and auto likes pictures with those hashtags to get more followers.
 
-Developed in Python
+Developed in Python and built with the mechanize library
 
 STILL IN DEVELOPMENT, CONTRIBUTIONS ARE WELCOME
 
