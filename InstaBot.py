@@ -1,34 +1,30 @@
-import mechanize, yaml, re, time, sys
+import mechanize, yaml, re, time, sys, pycurl, hmac
+from hashlib import sha256
 
 WEBSTA_URL = "http://websta.me/"
-WEBSTA_LOGIN = WEBSTA_URL + "login"
 WEBSTA_HASHTAG = WEBSTA_URL + "hot"
-WEBSTA_LIKE = WEBSTA_URL + "api/like/"
 
-INSTAGRAM_LOGIN = "https://instagram.com/accounts/login/"
+INSTAGRAM_API = "https://api.instagram.com/v1/media/"
 USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'
 
 
-def login(br, profile):
+def encodeAndRequest(id):
 
-	br.open(INSTAGRAM_LOGIN)
+	c = pycurl.Curl()
+	signature = hmac.new(str(profile['CREDENTIALS']['CLIENT_SECRET']), profile['IP'], sha256).hexdigest()
+	header = '|'.join([profile['IP'], signature])
+	header = ["X-Insta-Forwarded-For: " + header]
 
-	br.form = list(br.forms())[0]  # Used because the form name was not named  
-	br.form.set_all_readonly(False) # allow changing the .value of all controls
+	url = INSTAGRAM_API + id + "/likes"
+	c.setopt(c.URL, url)
+	c.setopt(c.POSTFIELDS, "access_token=" + str(profile['CREDENTIALS']['ACCESS_TOKEN']))
+	c.setopt(pycurl.HTTPHEADER, header)
+	c.perform()
+
+	response = str(c.getinfo(c.HTTP_CODE))
+	c.close()
 	
-	userNameControl = br.form.find_control("username")
-	userNameControl.value = profile['CREDENTIALS']['USERNAME']
-	passwordControl = br.form.find_control("password")
-	passwordControl.value = profile['CREDENTIALS']['PASSWORD']
-
-	br.submit()
-
-	if bool(re.search("Please enter a correct username and password\. Note that both fields are case-sensitive", br.response().read())):
-		print "INCORRECT LOGIN"
-		print "PLEASE CHECK CREDENTIALS... EXITING NOW"
-		sys.exit()
-
-	br.open(WEBSTA_LOGIN) # logs into websta.me website
+	return response
 
 def getTopHashTags(br):
 
@@ -55,14 +51,10 @@ def like(br, hashtags):
 	for hashtag in hashtags:
 		hashtaglikes = 0
 		media_id = []
-		br.open(WEBSTA_URL +"tag/" + hashtag)
+		response = br.open(WEBSTA_URL +"tag/" + hashtag)
 		print "Liking #" + str(hashtag)
-		
-		for form in br.forms():
-			form.set_all_readonly(False)
-			for control in form.controls:
-				if control.name == "media_id":
-					media_id.append(control.value)
+		media_id = re.findall("span class=\"like_count_(.*)\"", response.read())
+
 		for id in media_id:
 
 			if profile['MAXLIKES'] == "NO_MAX":
@@ -81,16 +73,16 @@ def like(br, hashtags):
 				hashtaglikes = 0
 				break
 
-			br.open(WEBSTA_LIKE + id)
+			response = encodeAndRequest(id)
 
-			if bool(re.match("{\"status\":\"OK\",\"message\":\"LIKED\"", br.response().read())):
-				print "YOU LIKED " + str(id)
+			if bool(re.search("200", response)):
+				print " YOU LIKED " + str(id)
 				likes += 1
 				hashtaglikes += 1
 				time.sleep(profile['SLEEPTIME'])
 			else:
 				print "SOMETHING WENT WRONG"
-				print br.response().read()
+				print response
 				print "SLEEPING FOR 60 seconds"
 				print "CURRENTLY LIKED " + str(likes) + " photos"
 				time.sleep(60)
@@ -107,9 +99,10 @@ if __name__ == "__main__":
 
 	profile = yaml.safe_load(open("profile.yml", "r"))	
 	br = mechanize.Browser()
+	br.set_handle_robots(False)
+	br.set_handle_equiv(False)
 	br.addheaders = [('User-Agent', USER_AGENT), ('Accept', '*/*')] 
 
-	login(br, profile)
 	if profile['TOP'] == 1:
 		hashtags = getTopHashTags(br)
 	else:
