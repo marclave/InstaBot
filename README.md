@@ -23,6 +23,8 @@ Clone this repository:
 ```
 git clone https://github.com/marclave/InstaBot.git
 ```
+Follow install instructions for PycURL: [instructions](PycURL Download.md)
+
 Go to [instagram clients](http://instagram.com/developer/clients/manage/)
 Register your account for a developers client
 Retrieve your CLIENT SECRET and USER ID token under "Manage Clients"
