@@ -7,7 +7,7 @@ WEBSTA_HASHTAG = WEBSTA_URL + "hot"
 INSTAGRAM_API = "https://api.instagram.com/v1/media/"
 USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'
 
-
+# Function to encode the string with the IP and ID of the picture then like it
 def encodeAndRequest(id):
 
 	c = pycurl.Curl()
@@ -26,13 +26,15 @@ def encodeAndRequest(id):
 	
 	return response
 
+# Function to parse the Top HashTag page and get the current top hashtags
 def getTopHashTags(br):
 
 	br.open(WEBSTA_HASHTAG)
 	topHashtags = re.findall('\"\>#(.*)\<\/a\>\<\/strong\>', br.response().read())
 
 	return topHashtags
-
+	
+# Function to read the hashtags from a users file if not wanting to parse the top 100
 def getHashtagsFromFile():
     #your list of hashtags
     hashtags = []
@@ -44,6 +46,7 @@ def getHashtagsFromFile():
     f.close()
     return hashtags
 	
+# Function to like hashtages
 def like(br, hashtags):
 
 	likes = 0
