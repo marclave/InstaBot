@@ -31,6 +31,8 @@ Retrieve your CLIENT SECRET and USER ID token under "Manage Clients"
 To retrieve your access token, go to [instagram api console](http://instagram.com/developer/api-console/)
 Run a query involving your USER ID and grab your access token from the request
 
+Note: Ensure likes are part of the access scope [enable likes scope](https://instagram.com/oauth/authorize/?client_id=INSERT_CLIENTID&redirect_uri=INSERT_REDIRECTURI&response_type=code&scope=likes+basic)
+
 
 Modify the profile to include your information, example:
 ```
