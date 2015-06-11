@@ -9,29 +9,34 @@ Developed in Python and built with the mechanize library
 
 STILL IN DEVELOPMENT, CONTRIBUTIONS ARE WELCOME
 
-##Requirements
-
-1. Python is installed (Tested with version 2.6.8)
-2. mechanize library is installed [Mechanize download!](http://wwwsearch.sourceforge.net/mechanize/download.html) V0.2.5
-3. PyYAML libray is installed [PyYAML download!](pyyaml.org/wiki/PyYAML) V3.11
-4. Authenticated your instagram account on [websta.me](http://websta.me/)
-5. PycURL library installed [PycURL download!](http://pycurl.sourceforge.net/) V7.19.5
-6. Registered a client for your account on [instagram](http://instagram.com/developer/clients/manage/)
-
 ##Setup
 Clone this repository:
 ```
 git clone https://github.com/marclave/InstaBot.git
 ```
-Follow install instructions for PycURL: [instructions](PycURL Download.md)
+run the following command to install the required libraries:
+```
+sudo pip install -r requirements.txt
+```
 
 Go to [instagram clients](http://instagram.com/developer/clients/manage/)
 Register your account for a developers client
 Retrieve your CLIENT SECRET and USER ID token under "Manage Clients"
-To retrieve your access token, go to [instagram api console](http://instagram.com/developer/api-console/)
-Run a query involving your USER ID and grab your access token from the request
 
-Note: Ensure likes are part of the access scope [enable likes scope](https://instagram.com/oauth/authorize/?client_id=INSERT_CLIENTID&redirect_uri=INSERT_REDIRECTURI&response_type=code&scope=likes+basic)
+To get your access token:
+
+use the "Client ID" and "Redirect URL" from the previous step and go to this address on your browser:
+```
+https://instagram.com/oauth/authorize/?client_id=INSERT_CLIENTID&amp;redirect_uri=INSERT_REDIRECTURI&amp;response_type=token
+```
+You would get redirected to your redirect url with your access token:
+```
+http://REDIRECT.URL/#access_token=YOUR_ACCESS_TOKEN_IS_HERE
+```
+now do the same thing with the following URL to authenticate likes on this Client ID:
+```
+https://instagram.com/oauth/authorize/?client_id=INSERT_CLIENTID&redirect_uri=INSERT_REDIRECTURI&response_type=code&scope=likes+basic
+```
 
 
 Modify the profile to include your information, example:
@@ -47,7 +52,7 @@ IP: "USER_IP_ADDRESS" <- run ipconfig or ifconfig to grab your ip address
 Note: If you do not put a 1 in the value of TOP then the program will look for a text file
 called hashtags.txt.
 
-The format for this file is to have each hashtag seperated by line, example:
+The format for this file is to have each hashtag separated by line, example:
 
 ```
 I
